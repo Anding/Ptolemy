@@ -12,9 +12,9 @@ CR
 	256 * R> +
 ;
 
-\ try to connect as a client to some typical TCP ports
+\ try to connect to the 10 Micron mount at Deep Sky Chile
 initwinsock
 CR
-127 0 0 1 toIPv4 0 5354 TCPConnect . .
-CR
-127 0 0 1 toIPv4 0 5939 TCPConnect . .
+192 168 1 107 toIPv4 0 3490 TCPConnect
+. dup .
+
