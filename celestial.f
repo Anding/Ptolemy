@@ -39,6 +39,7 @@
 	dup >R 
 	0 # # #
 	#>
+;
 
 : check-sign ( caddr u -- caddr u +/-1)
 \ test for a sign character (including blank) at the start of a string
