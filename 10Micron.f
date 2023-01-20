@@ -37,7 +37,6 @@
 
 : mount.checksocket ( -- ior)
 \ check for an uninitialized socket
-	CR
 	MNTSOC 0 = if 
 		CR ." Use mount.connect first" CR -1 
 	else
@@ -47,7 +46,6 @@
 	
 : mount.tell ( c-addr u --)
 \ pass a command string to the mount	
-	CR
 	mount.checksocket if drop drop exit then
 	dup -rot 						( u c-addr u)
 	MNTSOC writesock				( u len 0 | u error SOCKET_ERROR)
@@ -57,13 +55,12 @@
 
 : mount.ask ( -- c-addr u)
 \ get a response from the mount
-	CR
 	mount.checksocket if MNTBUF 0 exit then
-	0 >R 3													( tries R:bytes)
+	0 >R 5													( tries R:bytes)
 	begin
 		1- dup 0 >=
 	while
-		125 ms
+		200 ms
 		MNTSOC pollsock									( tries len | tries SOCKET_ERROR)
 		dup SOCKET_ERROR = if 
 			drop ." Failed to poll the socket " CR
@@ -91,31 +88,36 @@
 	mount.ask type
 ;
 
+: mount.highPrecision
+\ set the mount in high precision mode
+	s" :U2#" mount.tell
+;
+
 : mount.DEC ( caddr u --)
 \ set the 10Micron target to a declination in the format sDD*MM:SS
 	CR
-	s" Sd" 2swap compose-command mount.tell
+	s" :Sd" 2swap compose-command mount.tell
 	mount.ask type
 ;
 
 : mount.RA ( caddr u --)
 \ set the 10Micron target to a right ascension in the format HH:MM:SS
 	CR
-	s" Sr" 2swap compose-command mount.tell
+	s" :Sr" 2swap compose-command mount.tell
 	mount.ask type
 ;
 
 : mount.DEC? ( --)
 \ get the 10Micron target declination in the raw format
 	CR
-	s" Gd#" mount.tell
+	s" :Gd#" mount.tell
 	mount.ask type
 ;
 
 : mount.RA? ( --)
 \ get the 10Micron target right ascension in the raw format
 	CR
-	s" Gr#" mount.tell
+	s" :Gr#" mount.tell
 	mount.ask type
 ;
 
