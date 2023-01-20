@@ -1,8 +1,8 @@
 \ Experimental code for controlling the 10Micron mount
 
-include ip.f
-include 10Micron.f
-include celestial.f
+include e:/coding/ptolemy/ip.f
+include e:/coding/ptolemy/10Micron.f
+include e:/coding/ptolemy/celestial.f
 
 mount.connect
 mount.status?
