@@ -12,20 +12,20 @@ mount.status?
 CR ." Set high precision mode"
 mount.highPrecision
 
-CR ." Set right ascension"
+CR ." Set target right ascension "
 12 45 15 $RA
-CR 2dup type
+2dup type
 mount.RA
 
-CR ." Set declination"
+CR ." Set target declination "
 -80 30 10 $DEC
-CR 2dup type
+2dup type
 mount.DEC
 
-CR ." Ask right ascension"
+CR ." Ask telescope right ascension"
 mount.RA?
 
-CR ." Ask declination"
+CR ." Ask telescope declination"
 mount.dec?
 
 CR ." Ask status"

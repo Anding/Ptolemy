@@ -108,16 +108,16 @@
 ;
 
 : mount.DEC? ( --)
-\ get the 10Micron target declination in the raw format
+\ get the 10Micron telescope declination in the raw format
 	CR
-	s" :Gd#" mount.tell
+	s" :GD#" mount.tell
 	mount.ask type
 ;
 
 : mount.RA? ( --)
-\ get the 10Micron target right ascension in the raw format
+\ get the 10Micron telescope right ascension in the raw format
 	CR
-	s" :Gr#" mount.tell
+	s" :GR#" mount.tell
 	mount.ask type
 ;
 
