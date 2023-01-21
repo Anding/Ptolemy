@@ -4,10 +4,10 @@ include e:/coding/ptolemy/ip.f
 include e:/coding/ptolemy/10Micron.f
 include e:/coding/ptolemy/celestial.f
 
-mount.connect
+10u.connect
 
 CR ." Ask status"
-mount.status?
+10u.status?
 
 CR ." Set high precision mode"
 mount.highPrecision
@@ -15,21 +15,21 @@ mount.highPrecision
 CR ." Set target right ascension "
 12 45 15 $RA
 2dup type
-mount.RA
+mount.RA 2drop
 
 CR ." Set target declination "
 -80 30 10 $DEC
 2dup type
-mount.DEC
+10u.DEC 2drop
 
 CR ." Ask telescope right ascension"
-mount.RA?
+10u.RA? 2drop
 
 CR ." Ask telescope declination"
-mount.dec?
+10u.DEC? 2drop
 
 CR ." Ask status"
-mount.status?
+10u.status? 2drop
 
 	
 		

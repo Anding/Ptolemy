@@ -21,7 +21,7 @@
 	MNTBUF	u1 u2 + 1+			( caddr3 u3)
 ;
 
-: mount.connect ( -- )
+: 10u.connect ( -- )
 \ try to connect to the 10 Micron mount at Deep Sky Chile
 	CR
 	192 168 1 107 toIPv4 0 3490 TCPConnect
@@ -35,7 +35,7 @@
 	drop \ better to leave the result?
 ;
 
-: mount.checksocket ( -- ior)
+: 10u.checksocket ( -- ior)
 \ check for an uninitialized socket
 	MNTSOC 0 = if 
 		CR ." Use mount.connect first" CR -1 
@@ -44,7 +44,7 @@
 	then
 ;
 	
-: mount.tell ( c-addr u --)
+: 10u.tell ( c-addr u --)
 \ pass a command string to the mount	
 	mount.checksocket if drop drop exit then
 	dup -rot 						( u c-addr u)
@@ -53,7 +53,7 @@
 	<> if ." Failed to write the full string to the socket" CR exit then
 ;
 
-: mount.ask ( -- c-addr u)
+: 10u.ask ( -- c-addr u)
 \ get a response from the mount
 	mount.checksocket if MNTBUF 0 exit then
 	0 >R 5													( tries R:bytes)
@@ -81,44 +81,44 @@
 	dup 0= if ." No response from the mount" CR then	
 ;
 	
-: mount.status?
+: 10u.status?
 \ obtain mount status
 	CR
-	s" :Gstat#" mount.tell
-	mount.ask type
+	s" :Gstat#" 10u.tell
+	10u.ask 2dup type
 ;
 
-: mount.highPrecision
+: 10u.highPrecision
 \ set the mount in high precision mode
-	s" :U2#" mount.tell
+	s" :U2#" 10u.tell
 ;
 
-: mount.DEC ( caddr u --)
+: 10u.DEC ( caddr u --)
 \ set the 10Micron target to a declination in the format sDD*MM:SS
 	CR
-	s" :Sd" 2swap compose-command mount.tell
-	mount.ask type
+	s" :Sd" 2swap compose-command 10.tell
+	10u.ask 2dup type
 ;
 
-: mount.RA ( caddr u --)
+: 10u.RA ( caddr u --)
 \ set the 10Micron target to a right ascension in the format HH:MM:SS
 	CR
-	s" :Sr" 2swap compose-command mount.tell
-	mount.ask type
+	s" :Sr" 2swap compose-command 10u.tell
+	10u.ask 2dup type
 ;
 
-: mount.DEC? ( --)
+: 10u.DEC? ( --)
 \ get the 10Micron telescope declination in the raw format
 	CR
-	s" :GD#" mount.tell
-	mount.ask type
+	s" :GD#" 10u.tell
+	10u.ask 2dup type
 ;
 
-: mount.RA? ( --)
+: 10u.RA? ( --)
 \ get the 10Micron telescope right ascension in the raw format
 	CR
-	s" :GR#" mount.tell
-	mount.ask type
+	s" :GR#" 10u.tell
+	10u.ask 2dup type
 ;
 
 	
