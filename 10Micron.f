@@ -25,11 +25,11 @@
 \ try to connect to the 10 Micron mount at Deep Sky Chile
 	CR
 	192 168 1 107 toIPv4 0 3490 TCPConnect
-	SOCKET_ERROR = if 
-		." Connection failed with WinSock error number "
-	else
+	?dup 0 = if 
 		." Connection succeeded on socket "
 		dup -> MNTSOC
+	else
+		." Connection failed with WinSock error number "
 	then
 	dup . CR
 	drop \ better to leave the result?
@@ -85,7 +85,7 @@
 \ defining word for a 10Micron command
 \ s" raw-command-string" MAKE-COMMAND name
 	CREATE	( caddr u --)
-		here place			\ copy the caddr u string to the parameter field as a counted string
+		$,					\ compile the caddr u string to the parameter field as a counted string
 	DOES>	( -- caddr u)
 		count				\ copy the counted string at the PFA to the stack in caddr u format
 		CR 10u.tell 
@@ -96,7 +96,7 @@
 \ defining word for a 10Micron command which takes a data string
 \ s" raw-command-prefix" MAKE-DATA-COMMAND name
 	CREATE	( caddr u --)
-		here place			\ copy the caddr u string to the parameter field as a counted string
+		$,
 	DOES>	( caddr u -- caddr u)
 		count				\ copy the counted string at the PFA to the stack in caddr u format
 		CR 2swap compose-command 10u.tell 
@@ -107,7 +107,7 @@
 \ defining word for a 10Micron command which has no return signal
 \ s" raw-command-string" MAKE-QUIET-COMMAND name
 	CREATE	( caddr u --)
-		here place			\ copy the caddr u string to the parameter field as a counted string
+		$,
 	DOES>	( --)
 		count				\ copy the counted string at the PFA to the stack in caddr u format
 		CR 10u.tell 
