@@ -46,7 +46,7 @@
 	
 : 10u.tell ( c-addr u --)
 \ pass a command string to the mount	
-	mount.checksocket if drop drop exit then
+	10u.checksocket if drop drop exit then
 	dup -rot 						( u c-addr u)
 	MNTSOC writesock				( u len 0 | u error SOCKET_ERROR)
 	SOCKET_ERROR = if ." Failed to write to the socket with error " . CR exit then
@@ -55,7 +55,7 @@
 
 : 10u.ask ( -- c-addr u)
 \ get a response from the mount
-	mount.checksocket if MNTBUF 0 exit then
+	10u.checksocket if MNTBUF 0 exit then
 	0 >R 5													( tries R:bytes)
 	begin
 		1- dup 0 >=
@@ -96,7 +96,7 @@
 : 10u.DEC ( caddr u --)
 \ set the 10Micron target to a declination in the format sDD*MM:SS
 	CR
-	s" :Sd" 2swap compose-command 10.tell
+	s" :Sd" 2swap compose-command 10u.tell
 	10u.ask 2dup type
 ;
 
@@ -121,6 +121,65 @@
 	10u.ask 2dup type
 ;
 
-	
-		
+: 10u.ALT? ( --)
+\ get the 10Micron telescope altitude in the raw format
+	CR
+	s" :GA#" 10u.tell
+	10u.ask 2dup type
+;
+
+: 10u.AZ? ( --)
+\ get the 10Micron telescope altitude in the raw format
+	CR
+	s" :GZ#" 10u.tell
+	10u.ask 2dup type
+;
+
+: 10u.pierSide?
+\ get the 10Micron pier side
+\ East#, telescope is on the east of the pier looking west
+\ West#, telescope is on the west of the pier looking east
+	CR
+	s" :pS#" 10u.tell
+	10u.ask 2dup type
+;
+
+: 10u.ST?
+\ get the siderial time at the mount in raw format
+	CR
+	s" :GS#" 10u.tell
+	10u.ask 2dup type
+;
+
+: 10u.unpark
+\ unpark the mount
+	CR
+	s" :PO#" 10u.tell
+;	
+
+: 10u.park
+\ park the mount
+	CR
+	s" :KA#" 10u.tell
+;
+
+: 10u.halt
+\ halt all mount movement	
+	CR
+	s" :Q#" 10u.tell
+;
+
+: 10u.slew
+\ slew to target RA Dec coordinates
+	CR
+	s" :MS#" 10u.tell
+	10u.ask 2dup type
+;
+
+: 10u.tracking?
+\ test the tracking status of the mount
+	CR
+	s" :D#" 10u.tell
+	10u.ask 2dup type
+; 
 
