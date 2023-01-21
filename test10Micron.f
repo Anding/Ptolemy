@@ -1,4 +1,4 @@
-\ Experimental code for controlling the 10Micron mount
+\ Testing code with the 10Micron mount
 
 include e:/coding/ptolemy/ip.f
 include e:/coding/ptolemy/10Micron.f

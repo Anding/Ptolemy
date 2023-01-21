@@ -1,4 +1,4 @@
-\ Experimental code for controlling the 10Micron mount
+\ Code for controlling the 10Micron mount
 
 0 value MNTSOC
 \ value type holding the socket number of the 10Micron mount
@@ -80,106 +80,70 @@
 	drop MNTBUF R>
 	dup 0= if ." No response from the mount" CR then	
 ;
-	
-: 10u.status?
-\ obtain mount status
-	CR
-	s" :Gstat#" 10u.tell
-	10u.ask 2dup type
+
+: MAKE-COMMAND
+\ defining word for a 10Micron command
+\ s" raw-command-string" MAKE-COMMAND name
+	CREATE	( caddr u --)
+		here place			\ copy the caddr u string to the parameter field as a counted string
+	DOES>	( -- caddr u)
+		count				\ copy the counted string at the PFA to the stack in caddr u format
+		CR 10u.tell 
+		10u.ask 2dup type
 ;
 
-: 10u.highPrecision
-\ set the mount in high precision mode
-	s" :U2#" 10u.tell
+: MAKE-DATA-COMMAND
+\ defining word for a 10Micron command which takes a data string
+\ s" raw-command-prefix" MAKE-DATA-COMMAND name
+	CREATE	( caddr u --)
+		here place			\ copy the caddr u string to the parameter field as a counted string
+	DOES>	( caddr u -- caddr u)
+		count				\ copy the counted string at the PFA to the stack in caddr u format
+		CR 2swap compose-command 10u.tell 
+		10u.ask 2dup type
 ;
 
-: 10u.DEC ( caddr u --)
-\ set the 10Micron target to a declination in the format sDD*MM:SS
-	CR
-	s" :Sd" 2swap compose-command 10u.tell
-	10u.ask 2dup type
+: MAKE-QUIET-COMMAND
+\ defining word for a 10Micron command which has no return signal
+\ s" raw-command-string" MAKE-QUIET-COMMAND name
+	CREATE	( caddr u --)
+		here place			\ copy the caddr u string to the parameter field as a counted string
+	DOES>	( --)
+		count				\ copy the counted string at the PFA to the stack in caddr u format
+		CR 10u.tell 
 ;
 
-: 10u.RA ( caddr u --)
-\ set the 10Micron target to a right ascension in the format HH:MM:SS
-	CR
-	s" :Sr" 2swap compose-command 10u.tell
-	10u.ask 2dup type
-;
-
-: 10u.DEC? ( --)
-\ get the 10Micron telescope declination in the raw format
-	CR
-	s" :GD#" 10u.tell
-	10u.ask 2dup type
-;
-
-: 10u.RA? ( --)
+s" :GR#"  MAKE-COMMAND 		10u.RA? ( --)
 \ get the 10Micron telescope right ascension in the raw format
-	CR
-	s" :GR#" 10u.tell
-	10u.ask 2dup type
-;
-
-: 10u.ALT? ( --)
+s" :GD#"  MAKE-COMMAND		10u.DEC? ( --)
+\ get the 10Micron telescope declination in the raw format
+s" :GA#"  MAKE-COMMAND		10u.ALT? ( --)
 \ get the 10Micron telescope altitude in the raw format
-	CR
-	s" :GA#" 10u.tell
-	10u.ask 2dup type
-;
-
-: 10u.AZ? ( --)
+s" :GZ#"  MAKE-COMMAND		10u.AZ? ( --)
 \ get the 10Micron telescope altitude in the raw format
-	CR
-	s" :GZ#" 10u.tell
-	10u.ask 2dup type
-;
-
-: 10u.pierSide?
+s" :GS#"  MAKE-COMMAND		10u.ST?
+\ get the siderial time at the mount in raw format
+s" :Gstat#" MAKE-COMMAND 	10u.status?
+\ get the status of the mount
+s" :pS#"  MAKE-COMMAND		10u.pierSide?
 \ get the 10Micron pier side
 \ East#, telescope is on the east of the pier looking west
 \ West#, telescope is on the west of the pier looking east
-	CR
-	s" :pS#" 10u.tell
-	10u.ask 2dup type
-;
-
-: 10u.ST?
-\ get the siderial time at the mount in raw format
-	CR
-	s" :GS#" 10u.tell
-	10u.ask 2dup type
-;
-
-: 10u.unpark
-\ unpark the mount
-	CR
-	s" :PO#" 10u.tell
-;	
-
-: 10u.park
-\ park the mount
-	CR
-	s" :KA#" 10u.tell
-;
-
-: 10u.halt
-\ halt all mount movement	
-	CR
-	s" :Q#" 10u.tell
-;
-
-: 10u.slew
-\ slew to target RA Dec coordinates
-	CR
-	s" :MS#" 10u.tell
-	10u.ask 2dup type
-;
-
-: 10u.tracking?
+s" :D#"  MAKE-COMMAND		10u.tracking?
 \ test the tracking status of the mount
-	CR
-	s" :D#" 10u.tell
-	10u.ask 2dup type
-; 
+s" :MS#"  MAKE-COMMAND		10u.slew
+\ slew to target RA Dec coordinates and start tracking
 
+s" :Sd" MAKE-DATA-COMMAND 	10u.DEC
+\ set the 10Micron target to a declension in the format sDDD:MM:SS
+s" :Sr" MAKE-DATA-COMMAND	10u.RA ( caddr u --)
+\ set the 10Micron target to a right ascension in the format HH:MM:SS
+
+s" :U2#" MAKE-QUIET-COMMAND 10u.highPrecision
+\ set the mount in high precision mode
+s" :KA#" MAKE-QUIET-COMMAND 10u.park
+\ park the mount
+s" :PO#" MAKE-QUIET-COMMAND 10u.unpark
+\ unpark the mount
+s" :Q#"  MAKE-QUIET-COMMAND 10u.halt
+\ halt all mount movement	
