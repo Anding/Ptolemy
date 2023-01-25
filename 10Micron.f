@@ -83,7 +83,7 @@
 
 : MAKE-COMMAND
 \ defining word for a 10Micron command
-\ s" raw-command-string" MAKE-COMMAND name
+\ s" raw-command-string" MAKE-COMMAND <name>
 	CREATE	( caddr u --)
 		$,					\ compile the caddr u string to the parameter field as a counted string
 	DOES>	( -- caddr u)
@@ -94,7 +94,7 @@
 
 : MAKE-DATA-COMMAND
 \ defining word for a 10Micron command which takes a data string
-\ s" raw-command-prefix" MAKE-DATA-COMMAND name
+\ s" raw-command-prefix" MAKE-DATA-COMMAND <name>
 	CREATE	( caddr u --)
 		$,
 	DOES>	( caddr u -- caddr u)
@@ -105,7 +105,7 @@
 
 : MAKE-QUIET-COMMAND
 \ defining word for a 10Micron command which has no return signal
-\ s" raw-command-string" MAKE-QUIET-COMMAND name
+\ s" raw-command-string" MAKE-QUIET-COMMAND <name>
 	CREATE	( caddr u --)
 		$,
 	DOES>	( --)
