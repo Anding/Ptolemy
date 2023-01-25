@@ -1,9 +1,8 @@
 ## Ptolemy next steps
 
 ### 1. Extend mount control language
-1. extend mount control language independent of 10Micron
-2. constructs such as ```M31 GOTO```
-3. time handling, periods, differences, etc.
+1. time handling, periods, differences, etc.
+2. discuss options for error handling during hands-off operation
 
 ### 2. USB / COM
 1. investigate serial communication from VFX

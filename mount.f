@@ -36,8 +36,9 @@
 	10u.park
 ;
 
-: HALT ( --)
-\ halt the mount
+: STOP ( --)
+\ stop (halt) the mount
+\ HALT is a VFX multitasking word
 	10u.halt
 ;
 	
