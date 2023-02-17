@@ -1,0 +1,32 @@
+First steps towards an astroimaging control system in Forth
+
+Astroimaging is a modern hobby using small telescopes equipped with digial cameras.  Computerized mounts point at celestial targets and track them during long duration exposures.  Setups can be portable equipment in a back-garden, small homemade observatories, or piers in "for-rent" observatories under excellent dark skies.  A common factor is a local PC (most commonly Windows) accessed via remote-desktop software from inside the warm home, or even from the other side of the world.
+
+The usual astroimaging software is not especially pleasing to a person familiar with Forth: unstable GUI interfaces, intransparent control logic, clunky macro interfaces, problems solved mainly by guesswork.  For exactly these reasons I am motivated to develop a Forth control system for operating my own astroimaging equipment, which is located at the Deep Sky Chile hosted observatory (figures).  The goals of the project are, firstly, to develop a logical and reliable control framework for the individual components: the mount, the camera, the motorized focuser, the motorized filer wheel, the various sensors, and secondly to develop a domain-specfic language to pursue astroimaging through a Forth interpreter.
+
+The system components operate quite differently: the mount (a 10Micron GM2000) is the easiest - a TCP/IP network device with a plain-text command protocol.  The USB3.0 CMOS camera (an ASI6200) and filter wheel (a ZWO EFW) are supplied with a C-language SDK.  The USB2.0 focuser (a component of the Takahashi CCA-250 telescope) has an unpublished protocol that will need to be reverse-engineered, but it is a native USB device not a COM port.
+
+I started work hands-on, trying to make contact with the mount.  Out of familiarity I chose to work with VFX Forth on Windows.  For TCP/IP communication VFX gives access to the WinSock kernal with words TCPconnect, writesock, pollsock, readsock.  Looking at 10Micron.f (listing), words 10u.ask and 10u.tell communicate text strings with the mount.  I wasn't sure what to expect from the mount and so 10u.ask was coded with error checking, a repeating loop and delays from the very beginning.  The extra care was rewarded - the mount responded and gave its status on the first attempt!
+
+Next I built up a series of "hard-coded" words corresponding one-to-one to 10Micron protocol commands.  This gave me confidence with the protocol and clarified a few gaps in the documentation.  After that the command words were replaced with three different defining works (some protocol commands need an input, some do not, and some make no response).
+
+The mount expects celestial coordinates to be specific in degrees (-90 to +90) or hours (0 - 23), arcminutes (0 - 59) and arcseconds (0 - 59).  A target on the celestial sphere requires coordinates in both Right Ascension and Declination, 6 integers in total.  Anticipating the benefit of interactive control at the Forth interpreter I chose the simplest possible format: 3 integers on the stack for each of RA or Dec.  $DEC (and $RA, celestial.f) pack the three integers into the string fomat required by the mount protocol.
+
+Turning to the domain specific control language, MAKE-TARGET (in mount.f) is a defining work for celestial targets.  GOTO combines three protocol control words.  Interactive sessions now become possible.  Have you seen the Great Orion Nebula through a telescope?  We define it and point.
+
+( RA) 05 36 25 ( DEC) -05 22 33 MAKE-TARGET M42
+M42 GOTO
+
+Even at this elementary stage I find I instinctively prefer to use the Forth interpreter to the usual software.  Typing a word feels more precise and professional then hunting through a GUI and pressing buttons.  Visibility to the mount's own command protocol makes problem solving well-informed and fast-moving.  Overall, Forth encourages new ideas that I try out interatively and interactivly, "saving" my progress in Forth definitons and simple include files, meanwhile building up an engineer's instinct for the system.  
+
+The next steps will be more challenging: controlling the focuser will require learning how to approach a native USB device in VFX Forth.  The camera will require mastering the C-language SDK and then interfacing it to Forth words.  This is an open source project (Ptolemy on Anding's Github page) and I hope to build a niche community around the project - if you are interested in astronomy or in controlling this kind of equipment from Forth, please get in touch!
+
+I am grateful to Ulli Hoffmann for his ideas and suggestions on this and other projects through our many discussions.
+
+Andrew Read
+February 2023
+andrew81244@outlook.com
+
+
+
+ 
