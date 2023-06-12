@@ -1,4 +1,6 @@
 \ Develop a Forth language to control the mount
+\ requires 10Micron.f, 10Micron_celestial.f
+
 
 : MAKE-TARGET
 \ defining word to name a set of coordinates in RA and DEC
