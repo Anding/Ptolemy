@@ -1,0 +1,16 @@
+Including e:/coding/ptolemy/10Micron.f
+Connection succeeded on socket 1328 
+
+Ask status
+5#
+Set high precision mode
+Set target right ascension 12:45:15
+1
+Set target declination -80*30:10
+1
+Ask telescope right ascension
+07:35:20.66#
+Ask telescope declination
+-89:46:25.3#
+Ask status
+5# ok
