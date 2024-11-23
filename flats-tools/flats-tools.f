@@ -1,20 +1,28 @@
 \ obtain a set of reference flat frames
 
-include "%idir%\..\ForthBase\libraries\libraries.f"
-NEED ForthKMTtonic
+include "%idir%\..\..\ForthBase\libraries\libraries.f"
+NEED ForthBase
+NEED FiniteFractions
+NEED Network
+NEED Windows
+NEED Forth-Map
+NEED ForthKMTronic
 NEED ForthPegasusAstro
 NEED ForthASI
-NEED ForthEAF
+NEED ForthEFW
+NEED Buffers
+NEED ForthXML
 NEED ForthXISF
 NEED ImageAnalysis
 
 0 value height
 0 value width
 0 value image
-100 mSecs value exposure_time ( units uS)
+100 mSecs value exposure_setting ( units uS)
 0 value mean_pixel_level
 0x8000 value target_level
 0 value relative_to_target
+0 constant ASI2600MM_031F 
 
 \ Set the rig to the Epsilon 160-ED
 s" Takahashi Epsilon 160-ED" $-> rig.telescope
@@ -59,8 +67,8 @@ s" Andrew Read" $-> obs.observer
 	lightbox-off
 	remove-lightbox
 	0 ->wheel_position
-	remove-wheel
-	remove-camera
+	0 remove-wheel
+	ASI2600MM_031F remove-camera
 	500 ms
 	1 relay-off
 	remove-relays
@@ -73,21 +81,21 @@ s" Andrew Read" $-> obs.observer
 		
 : expose
 \ take a test image
-	exposure_time ->camera_exposure
+	exposure_setting ->camera_exposure
 	start-exposure
-	image FITS_MAP add-observationFITS		\ includes timestame and UUID
-	image XISF_MAP add-observationXISF
-	image FITS_MAP add-rigFITS	
-	image FITS_MAP add-cameraFITS
-	image FITS_MAP add-wheelFITS	
-	image XISF_MAP add-cameraXISF		
-	exposure_time 1000 / 50 + ms
+\ 	image FITS_MAP add-observationFITS		\ includes timestame and UUID
+\ 	image XISF_MAP add-observationXISF
+\ 	image FITS_MAP add-rigFITS	
+\ 	image FITS_MAP add-cameraFITS
+\ 	image FITS_MAP add-wheelFITS	
+\ 	image XISF_MAP add-cameraXISF		
+	exposure_setting 1000 / 100 + ms
 	image IMAGE_BITMAP image image_size ( addr n) download-image
 ;
 
 : review
 \ review the image 
-	image IMAGE_BITMAP width height make-histogram
+	width height image IMAGE_BITMAP make-histogram
 	histogram.mean dup -> mean_pixel_level dup
 	 CR ." Mean pixel level " . CR
 	 100 target_level */ dup -> relative_to_target
@@ -96,16 +104,11 @@ s" Andrew Read" $-> obs.observer
 
 : adjust
 \ scale the exposure time
-	exposure_time target_level mean_pixel_level */ dup -> exposure_time
+	exposure_time target_level mean_pixel_level */ dup -> exposure_setting
 	CR ." Revised exposure time (us) " . CR
 ;
 
-: save
-\ save the latest flat-frame image
-	save-image
-;
-
-: burst ( n --)
+: burst-images ( n --)
 \ take a batch of flat-frame images
 	CR 0 DO 
 		i . tab
