@@ -61,6 +61,8 @@ s" Andrew Read" $-> obs.observer
 	\ obtain the size of the camera sensor and allocate an image buffer with descriptor
 	camera_pixels ( width height) -> height -> width
 	width height 1 allocate-image ( img) -> image
+	map image FITS_map !
+	map image XISF_map !
 ;
 
 : shutdown
@@ -83,12 +85,12 @@ s" Andrew Read" $-> obs.observer
 \ take a test image
 	exposure_setting ->camera_exposure
 	start-exposure
- 	image FITS_MAP add-observationFITS		\ includes timestame and UUID
- 	image XISF_MAP add-observationXISF
- 	image FITS_MAP add-rigFITS	
- 	image FITS_MAP add-cameraFITS
- 	image FITS_MAP add-wheelFITS	
- 	image XISF_MAP add-cameraXISF		
+ 	image FITS_MAP @ add-observationFITS		\ includes timestame and UUID
+ 	image XISF_MAP @ add-observationXISF
+ 	image FITS_MAP @ add-rigFITS	
+ 	image FITS_MAP @ add-cameraFITS
+ 	image FITS_MAP @ add-wheelFITS	
+ 	image XISF_MAP @ add-cameraXISF		
 	exposure_setting 1000 / 100 + ms
 	image IMAGE_BITMAP image image_size ( addr n) download-image
 ;
