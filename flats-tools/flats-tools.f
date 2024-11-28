@@ -110,6 +110,10 @@ s" Andrew Read" $-> obs.observer
 	CR ." Revised exposure time (us) " . CR
 ;
 
+: save ( --)
+	image save-image
+;
+
 : burst-images ( n --)
 \ take a batch of flat-frame images
 	CR 0 DO 
@@ -117,6 +121,8 @@ s" Andrew Read" $-> obs.observer
 		expose save
 	LOOP CR
 ;
+
+
 
 
 
