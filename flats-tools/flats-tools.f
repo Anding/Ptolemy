@@ -18,7 +18,7 @@ NEED ImageAnalysis
 0 value height
 0 value width
 0 value image
-100 mSecs value exposure_setting ( units uS)
+8000 mSecs value exposure_setting ( units uS)
 0 value mean_pixel_level
 0x8000 value target_level
 0 value relative_to_target
@@ -45,7 +45,7 @@ s" Andrew Read" $-> obs.observer
 	5 -> Pegasus.COM
 	add-lightbox
 	lightbox-on
-	80 ->lightbox.intensity
+	20 ->lightbox.intensity
 
 	\ activate the camera
 	scan-cameras
@@ -82,7 +82,8 @@ s" Andrew Read" $-> obs.observer
 		
 : expose
 \ take a test image
-	exposure_setting ->camera_exposure
+	exposure_setting dup ->camera_exposure
+	CR ." Exposure time (us) " . CR	
 	start-exposure
  	image FITS_MAP @ add-observationFITS		\ includes timestame and UUID
  	image XISF_MAP @ add-observationXISF
@@ -105,7 +106,7 @@ s" Andrew Read" $-> obs.observer
 
 : adjust
 \ scale the exposure time
-	exposure_time target_level mean_pixel_level */ dup -> exposure_setting
+	exposure_setting target_level mean_pixel_level */ dup -> exposure_setting
 	CR ." Revised exposure time (us) " . CR
 ;
 
@@ -113,9 +114,9 @@ s" Andrew Read" $-> obs.observer
 	image save-image
 ;
 
-: burst-images ( n --)
+: burst ( --)
 \ take a batch of flat-frame images
-	CR 0 DO 
+	CR 7 0 DO 
 		i . tab
 		expose save
 	LOOP CR
