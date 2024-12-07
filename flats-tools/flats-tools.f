@@ -39,7 +39,7 @@ s" Andrew Read" $-> obs.observer
 	6 -> KMTronic.COM
 	add-relays
 	1 relay-on
-	500 ms
+	1000 ms
 
 	\ activate the lightbox and switch on ilumination
 	5 -> Pegasus.COM
@@ -51,7 +51,6 @@ s" Andrew Read" $-> obs.observer
 	scan-cameras
 	ASI2600MM_031F add-camera
 	ASI2600MM_031F use-camera
-	500 ms
 	
 	\ activate the filter wheel
 	scan-wheels
