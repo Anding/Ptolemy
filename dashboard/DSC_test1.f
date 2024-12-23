@@ -1,4 +1,4 @@
-include %idir%\..\ForthBase\libraries\libraries.f
+include %idir%\..\..\ForthBase\libraries\libraries.f
 NEED Forth10Micron
 NEED forth-map
 
