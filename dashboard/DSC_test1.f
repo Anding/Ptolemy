@@ -23,9 +23,9 @@ DASHmap +map				\ need to expose the map to compile the keywords in .DASHBOARD
 
 	table.cellWidth dup 4 * 3 + -> table.cellWidth	\ merge 4 columns
 	row |h ." Deep Sky Chile 10Micron mount telemetry"		-> table.cellWidth	\ restore column width
-	row |r 							|r 						|r 
+	row |r 							|r 						|r 							|r
 	row |t s" Local time" RJ.	|t LOCALTME RJ.		|t s" Sidereal time" RJ.		|t SIDEREAL RJ.	
-	row |l 							|l 						|l 							|r
+	row |l 							|l 						|l 							|l
 	row |t s" Status" RJ.		|t STATUS RJ.			|t s" Tracking" RJ.		|t TRACKING RJ.	
 	row |l 							|l 						|l 							|l	
 	row |t s" R.A." RJ.			|t OBJCTRA RJ.			|t s" DEC" RJ.				|t OBJCTDEC RJ.
@@ -40,13 +40,15 @@ DASHmap +map				\ need to expose the map to compile the keywords in .DASHBOARD
 ;
 
 : cycle-dashboard
-	begin 
-		vt.reset vt.cursor_off vt.cls
-	-1 while
-		key? if CR vt.cursor_on vt.reset exit then
+	vt.reset vt.cursor_off vt.cls
+	begin
+		5 0 do
+			key? if CR vt.cursor_on vt.reset exit then
+			200 ms
+		loop
 		DASHmap add-mountDASH
 		vt.home .DASHBOARD
-	repeat
+	again
 ;
 
 vt.reset vt.cursor_off vt.cls vt.home
