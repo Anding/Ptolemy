@@ -36,16 +36,16 @@ s" Andrew Read" $-> obs.observer
 
 : startup
 	\ activate the relays and switch on camera power
-	6 -> KMTronic.COM
+	4 -> KMTronic.COM
 	add-relays
 	1 relay-on
 	1000 ms
 
 	\ activate the lightbox and switch on ilumination
-	5 -> Pegasus.COM
-	add-lightbox
-	lightbox-on
-	20 ->lightbox.intensity
+\	5 -> Pegasus.COM
+\	add-lightbox
+\	lightbox-on
+\	20 ->lightbox.intensity
 
 	\ activate the camera
 	scan-cameras
@@ -121,7 +121,6 @@ s" Andrew Read" $-> obs.observer
 		expose save
 	LOOP CR
 ;
-
 
 
 

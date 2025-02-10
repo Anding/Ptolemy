@@ -7,6 +7,7 @@ NEED Network
 NEED Windows
 NEED Forth-Map
 NEED ForthKMTronic
+NEED Forth10Micron
 NEED ForthASI
 NEED ForthEAF
 NEED ForthEFW
@@ -17,7 +18,6 @@ NEED ForthXISF
 0 value height
 0 value width
 0 value image
-10000 mSecs value exposure_setting ( units uS)
 0 constant ASI2600MM_031F 
 
 \ Set the rig to the Epsilon 160-ED
@@ -29,10 +29,16 @@ s" Takahashi Epsilon 160-ED" $-> rig.telescope
 \ Set the observation type to flats
 LIGHT -> obs.type
 s" Andrew Read" $-> obs.observer
+s" SNAPSHOT" $-> obs.object
 
 : startup
+	\ connect to the mount
+	192 168 0 15 toIPv4 -> 10Micron.IP
+	add-mount
+	10u.HighPrecisionOn
+
 	\ activate the relays and switch on camera power
-	6 -> KMTronic.COM
+	4 -> KMTronic.COM
 	add-relays
 	1 relay-on
 	1000 ms
@@ -41,6 +47,8 @@ s" Andrew Read" $-> obs.observer
 	scan-cameras
 	ASI2600MM_031F add-camera
 	ASI2600MM_031F use-camera
+	\ Set the exposure time
+	10000000 ->camera_exposure
 	
 	\ activate the focuser
 	scan-focusers
@@ -69,16 +77,14 @@ s" Andrew Read" $-> obs.observer
 		
 : expose
 \ take an image
-	exposure_setting dup ->camera_exposure
-	CR ." Exposure time (us) " . CR	
 	start-exposure
  	image FITS_MAP @ add-observationFITS		\ includes timestame and UUID
  	image XISF_MAP @ add-observationXISF
  	image FITS_MAP @ add-rigFITS	
  	image FITS_MAP @ add-cameraFITS
  	image FITS_MAP @ add-focuserFITS	
- 	image XISF_MAP @ add-cameraXISF		
-	exposure_setting 1000 / 100 + ms
+ 	image XISF_MAP @ add-cameraXISF	
+	camera_exposure 1000 / 100 + ms	
 	image IMAGE_BITMAP image image_size ( addr n) download-image
 	image save-image
 ;
@@ -87,11 +93,11 @@ s" Andrew Read" $-> obs.observer
 \ take a batch of flat-frame images
 	." focuser initial position: " focuser_position dup  . CR
 	CR 9 0 DO 
-		dup 100 - i 25 * + dup ->focuser_position
+		dup 100 - i 25 * + dup focus
 		." Exposing at focuser position: " . CR
 		expose
 	LOOP
-	dup ->focuser_position
+	dup focus
 	." focuser final position: " focuser_position dup  . CR	
 ;
 
