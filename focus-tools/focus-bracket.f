@@ -33,15 +33,15 @@ s" SNAPSHOT" $-> obs.object
 
 : startup
 	\ connect to the mount
-	192 168 0 15 toIPv4 -> 10Micron.IP
-	add-mount
-	10u.HighPrecisionOn
+	\ 192 168 0 15 toIPv4 -> 10Micron.IP
+	\ add-mount
+	\ 10u.HighPrecisionOn
 
 	\ activate the relays and switch on camera power
 	4 -> KMTronic.COM
 	add-relays
 	1 relay-on
-	1000 ms
+	2000 ms
 
 	\ activate the camera
 	scan-cameras
