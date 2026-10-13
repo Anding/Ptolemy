@@ -3,7 +3,7 @@
 
 include "%idir%\..\ForthBase\ForthBase.f"
 include "%idir%\..\ForthBase\FiniteFractions.f"
-include "%idir%\..\ForthXISF\XISF.f"
+include "%idir%\..\ForthAstroFormats\XISF.f"
 include "%idir%\..\ForthASI\ForthASI\ASI_SDK.f"
 
 XISF_BUFFER BUFFER XISFBuffer			\ reserved buffer for camera image in XISF format

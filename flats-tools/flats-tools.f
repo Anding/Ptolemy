@@ -59,7 +59,7 @@ s" Andrew Read" $-> obs.observer
 	
 	\ obtain the size of the camera sensor and allocate an image buffer with descriptor
 	camera_pixels ( width height) -> height -> width
-	width height 1 allocate-image ( img) -> image
+	width height 1 allocate-frame ( img) -> image
 	map image FITS_map !
 	map image XISF_map !
 ;
@@ -85,19 +85,19 @@ s" Andrew Read" $-> obs.observer
 	exposure_setting dup ->camera_exposure
 	CR ." Exposure time (us) " . CR	
 	start-exposure
- 	image FITS_MAP @ add-observationFITS		\ includes timestame and UUID
+	image FRAME_METADATA @ add-observationFITS		\ includes timestame and UUID
  	image XISF_MAP @ add-observationXISF
- 	image FITS_MAP @ add-rigFITS	
- 	image FITS_MAP @ add-cameraFITS
- 	image FITS_MAP @ add-wheelFITS	
+	image FRAME_METADATA @ add-rigFITS
+	image FRAME_METADATA @ add-cameraFITS
+	image FRAME_METADATA @ add-wheelFITS
  	image XISF_MAP @ add-cameraXISF		
 	exposure_setting 1000 / 100 + ms
-	image IMAGE_BITMAP image image_size ( addr n) download-image
+	image FRAME_BITMAP image frame-size ( addr n) download-image
 ;
 
 : review
 \ review the image 
-	width height image IMAGE_BITMAP make-histogram
+	width height image FRAME_BITMAP make-histogram
 	histogram.mean dup -> mean_pixel_level dup
 	 CR ." Mean pixel level " . CR
 	 100 target_level */ dup -> relative_to_target
@@ -121,7 +121,4 @@ s" Andrew Read" $-> obs.observer
 		expose save
 	LOOP CR
 ;
-
-
-
 

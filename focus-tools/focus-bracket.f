@@ -57,7 +57,7 @@ s" SNAPSHOT" $-> obs.object
 	
 	\ obtain the size of the camera sensor and allocate an image buffer with descriptor, and forth-maps
 	camera_pixels ( width height) -> height -> width
-	width height 1 allocate-image ( img) -> image
+	width height 1 allocate-frame ( img) -> image
 	map image FITS_map !
 	map image XISF_map !
 ;
@@ -78,14 +78,14 @@ s" SNAPSHOT" $-> obs.object
 : expose
 \ take an image
 	start-exposure
- 	image FITS_MAP @ add-observationFITS		\ includes timestame and UUID
+	image FRAME_METADATA @ add-observationFITS		\ includes timestame and UUID
  	image XISF_MAP @ add-observationXISF
- 	image FITS_MAP @ add-rigFITS	
- 	image FITS_MAP @ add-cameraFITS
- 	image FITS_MAP @ add-focuserFITS	
+	image FRAME_METADATA @ add-rigFITS
+	image FRAME_METADATA @ add-cameraFITS
+	image FRAME_METADATA @ add-focuserFITS
  	image XISF_MAP @ add-cameraXISF	
 	camera_exposure 1000 / 100 + ms	
-	image IMAGE_BITMAP image image_size ( addr n) download-image
+	image FRAME_BITMAP image frame-size ( addr n) download-image
 	image save-image
 ;
 
@@ -106,4 +106,3 @@ s" SNAPSHOT" $-> obs.object
 : RA ~ ;
 : DEC ~ ;
 : name-target ( caddr u --) $-> obs.observer ;
-
